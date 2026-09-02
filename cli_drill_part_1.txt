@@ -1,0 +1,56 @@
+#!/bin/bash
+clear
+
+#Pipes
+mkdir drill-two          														#making a new directory       
+cd drill-two																				#entering the new directory
+curl -o harrypotter.txt  https://raw.githubusercontent.com/bobdeng/owlreader/master/ERead/assets/books/Harry%20Potter%20and%20the%20Goblet%20of%20Fire.txt
+#fetching the response into a file named harrypotter.txt
+head -n 3 harrypotter.txt														#print from the first line, limiting to 3 using -n flag
+tail -n 10 harrypotter.txt													#print last line, including 10 lines using -n flag
+grep -io "Harry" harrypotter.txt | wc -l 						#3172 - total count. -i makes all the entries case insensitive. -o counts
+																										#each instance of the word
+grep -io "Ron" harrypotter.txt | wc -l 							#1358
+grep -io "Hermione" harrypotter.txt | wc -l					#872
+grep -io "Dumbledore" harrypotter.txt | wc -l				#596
+sed -n 100,200p harrypotter.txt											#stream reader reads line from 100 to 200 using -n flag. p tells to print.
+tr 'A-Z' 'a-z' < harrypotter.txt | tr -cs 'a-z' '[\n*]' | sort -u | wc -l 		
+#10219 - total unique words. tr 'A-Z' 'a-z' takes input from the file and truns all the instance of words into smaller case.
+#'[\n*]' escape sequence breaks the line. sort -u sorts the result excluding duplicates. wc -l prints the word count.
+
+
+#Processes, ports
+ps -eo pid,ppid,comm | grep firefox									#-e lists all processes. -o specifies the columns
+ps -eo pid,comm | grep firefox | awk '{print $1}' | xargs kill
+#first three commands pin point the pid of the browser. xargs uses the dynamic pid as input to kill the process
+ps -eo comm,%cpu --sort=-%cpu | head -n 4 					#--sort sorts the result based on cpu usage column, head -n 4 limits the 
+																										#response to 3 lines (excluding the header).
+ps -eo comm,%mem --sort=-%mem | head -n 4
+python3 -m http.server 8000													#starts a new http server on given port
+firefox --new-tab http://localhost:8000							#opens the link in a new tab
+ps x | grep http.server | grep 8000 | awk '{print $1}' | xargs kill
+#filters previous service using http.server and 8000 (port) filters. awk extract the pid from the response. xargs kills the
+#process using dynamic input from the previous commands
+sudo python3 -m http.server 90											#Linux limits 0-1023 prts for priviliged usage so sudo is used for port 90
+ss -tuln																						#lists all listening and active TCP and UDP port numbers in numeric form. 
+sudo ss -tulpn | grep 5353 > process.txt            #gets the process details with port (5432 port has no process so using 5353)
+awk -F'pid=' '{print $2}' process.txt | awk -F',' '{print $1}'
+#-F break the process.txt into two parts at 'pid='. Second command breaks the remaining result at , 
+#and prints the very first column which is out pid on the given port.
+
+
+#Managing software
+sudo apt install htop vim nginx 										#installs all the softwares with admin permission
+htop --version																			#checking if all programs installed successfully
+vim --version
+nginx -v
+sudo apt remove nginx																#uninstalling nginx
+nginx -v																						#checking if it's uninstalled
+
+#Misc
+hostname -I																					#prints ip4 on the console. ip -4/6 addr can be used alternatively
+getent hosts google.com															#gets Googl's IP addr
+ping -c 4 google.com																#if the command shows packet transmission, the internet is working.
+
+
+
