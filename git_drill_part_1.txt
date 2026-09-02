@@ -1,0 +1,53 @@
+mkdir git_sample_project
+cd git_sample_project
+
+git init
+git branch -M main
+
+touch {a,b,c}.txt
+
+echo 'This is the content for file A.' > a.txt
+echo 'This is the content for file B.' > b.txt
+echo 'This is the content for file C.' > c.txt
+
+git add a.txt b.txt
+git status
+
+git commit -m 'Add a.txt and b.txt'
+
+git status
+git log
+
+git add c.txt
+git commit -m 'Add c.txt'
+
+git remote add origin https://github.com/imsalikvns/learning_outcomes_part_1.git
+
+git push -u origin main
+
+cd ..
+
+git clone https://github.com/imsalikvns/learning_outcomes_part_1.git git_sample_project_2
+
+cd git_sample_project_2
+
+touch d.txt
+
+git add d.txt
+git commit -m 'Add d.txt'
+
+git push
+
+cd ../git_sample_project
+
+git pull origin main
+
+cp ../git_drill_part_1.txt .
+git add git_drill_part_1.txt
+git commit -m 'Add git drill'
+git push
+
+cp ../cli_drill_part_1.txt .
+git add cli_drill_part_1.txt
+git commit -m 'Add CLI drill'
+git push
