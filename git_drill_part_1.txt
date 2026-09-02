@@ -50,4 +50,6 @@ git push
 cp ../cli_drill_part_1.txt .
 git add cli_drill_part_1.txt
 git commit -m 'Add CLI drill'
-git push
+git push origin main
+
+#I didn't have mentor's GitHub username to add as developer to my project
